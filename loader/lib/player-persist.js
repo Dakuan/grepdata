@@ -8,7 +8,7 @@ exports.persist = function (playerStream) {
 
     function getDb() {
         var deferred = Q.defer();
-        MongoClient.connect('mongodb://127.0.0.1:27017/grepo_test', function (err, db) {
+        MongoClient.connect(process.env['MONGOLAB_URI'], function (err, db) {
             if (err) throw err;
             deferred.resolve(db)
         });
