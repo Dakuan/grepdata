@@ -4,7 +4,13 @@ var sourceData = require('./source-data'),
 
 
 exports.players = function (world) {
-    var file = sourceData.players(world);
-    var playerStream = parser.parse(file);
-    persist.persist(playerStream);
+    var start = new Date().getTime(),
+        file = sourceData.players(world),
+        playerStream = parser.parse(file);
+    persist.persist(playerStream).then(function (total) {
+        var end = new Date().getTime(),
+            time = (end - start) / 1000;
+        console.log('Processed: ' + total + ' players');
+        console.log('\nExecution time: ' + time + ' seconds');
+    });
 }

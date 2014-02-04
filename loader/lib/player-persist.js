@@ -3,14 +3,13 @@ var _ = require('underscore'),
     Q = require('q');
 
 exports.persist = function (playerStream) {
-    var total = 0,
-        count = 0,
-        start = new Date().getTime();
+    var deferred = Q.defer(),
+        total = 0,
+        count = 0;
 
     function getDb() {
-        var deferred = Q.defer();
-        var url = process.env['MONGOLAB_URI'] || 'mongodb://127.0.0.1:27017/grepo_test'
-        console.log(url);
+        var deferred = Q.defer(),
+            url = process.env['MONGOLAB_URI'] || 'mongodb://127.0.0.1:27017/grepo_test'
         MongoClient.connect(url, function (err, db) {
             if (err) throw err;
             deferred.resolve(db)
@@ -57,21 +56,27 @@ exports.persist = function (playerStream) {
     }
 
     function finishUp(db) {
-        var end = new Date().getTime(),
-            time = (end - start) / 1000,
-            endMessage = 'Proccessed ' + total + ' players'
-        endMessage += '\nExecution time: ' + time + ' seconds'
-        endMessage += '\nCompleted'
-        console.log(endMessage);
         db.close();
+        return total;
     }
+    process.stdout.write('Processing players');
 
+    var dot = setInterval(function(){
+        process.stdout.write('.');
+    }, 200);
     getDb()
         .then(createIndex)
         .then(persistPlayers)
         .then(finishUp, function (err) {
             console.log(err);
         }, function (progress) {
-            console.log(progress);
-        });
+            // process.stdout.write('.')
+        })
+        .then(function (total) {
+            process.stdout.write('\n');
+            clearInterval(dot);
+            deferred.resolve(total);
+        })
+
+    return deferred.promise;
 }
