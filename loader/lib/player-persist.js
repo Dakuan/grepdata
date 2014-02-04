@@ -15,12 +15,37 @@ exports.persist = function (playerStream) {
         return deferred.promise;
     }
 
-    function clearPlayers(db) {
+    function createIndex(db) {
         var deferred = Q.defer();
-        var collection = db.collection('players');
-        collection.drop(function (error, result) {
+        db.ensureIndex('players', "playerId", function (err) {
             deferred.resolve(db);
         });
+        return deferred.promise;
+    }
+
+    function persistPlayers(db) {
+        var collection = db.collection('players');
+        var deferred = Q.defer();
+        playerStream
+            .each(function (player) {
+                collection.update({
+                    playerId: player.playerId
+                }, player, {
+                    upsert: true
+                }, function (err, docs) {
+                    if (err) {
+                        console.log(err);
+                        throw new Error(err)
+                    }
+                    total++;
+                    deferred.notify(player);
+                });
+            })
+            .onComplete(function () {
+                _.defer(function () {
+                    deferred.resolve(db);
+                });
+            });
         return deferred.promise;
     }
 
@@ -34,32 +59,12 @@ exports.persist = function (playerStream) {
         db.close();
     }
 
-    function persistPlayers(db) {
-        var collection = db.collection('players');
-        var deferred = Q.defer();
-        playerStream
-            .each(function (player) {
-                collection.insert(player, function (err, docs) {
-                    if (err) {
-                        console.log(err);
-                        throw 'boom';
-                    }
-                    total++;
-                    deferred.notify(docs);
-                });
-            })
-            .onComplete(function () {
-                _.defer(function () {
-                    deferred.resolve(db);
-                });
-            });
-        return deferred.promise;
-    }
-
     getDb()
-        .then(clearPlayers)
-        .then(persistPlayers)
-        .then(finishUp, function () {}, function (progress) {
+    .then(createIndex)
+    .then(persistPlayers)
+        .then(finishUp, function (err) {
+            console.log(err);
+        }, function (progress) {
             console.log(progress);
         });
 }

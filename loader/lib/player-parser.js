@@ -1,6 +1,6 @@
 var Lazy = require('lazy.js'),
     _ = require('underscore'),
-    keys = ['id', 'name', 'allianceId', 'points', 'rank'];
+    keys = ['playerId', 'name', 'allianceId', 'points', 'rank'];
 
 function split(line) {
     return line.split(',');
