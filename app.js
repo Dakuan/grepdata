@@ -1,6 +1,6 @@
 var cronJob = require('cron').CronJob,
     loader = require('./loader/lib/loader');
 
-new cronJob('*/15 * * * *', function () {
+new cronJob('*/1 * * * *', function () {
     loader.players(72);
 });
