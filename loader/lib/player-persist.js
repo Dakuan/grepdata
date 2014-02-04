@@ -52,7 +52,6 @@ exports.persist = function (playerStream) {
                         clearInterval(inter);
                     }
                 }, 20);
-
             });
         return deferred.promise;
     }
@@ -71,8 +70,8 @@ exports.persist = function (playerStream) {
         .then(createIndex)
         .then(persistPlayers)
         .then(finishUp, function (err) {
-            // console.log(err);
+            console.log(err);
         }, function (progress) {
-            // console.log(progress);
+            console.log(progress);
         });
 }

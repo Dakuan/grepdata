@@ -1,1 +1,1 @@
-worker: node app.js
+loader: node loader/tasks.js
