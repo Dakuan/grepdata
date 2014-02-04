@@ -3,4 +3,4 @@ var cronJob = require('cron').CronJob,
 
 new cronJob('*/1 * * * *', function () {
     loader.players(72);
-});
+}, null, true, "Europe/London"););
