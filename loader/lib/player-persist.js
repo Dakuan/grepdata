@@ -1,65 +1,65 @@
-var mongoose = require('mongoose'),
-	_ = require('underscore'),
+var _ = require('underscore'),
+    MongoClient = require('mongodb').MongoClient,
     Q = require('q');
 
-mongoose.connect('localhost', 'grepo_test');
-
-var Player = mongoose.model('Player', {
-    id: Number,
-    name: String,
-    points: Number,
-    rank: Number
-});
-
 exports.persist = function (playerStream) {
-
     var total = 0,
         start = new Date().getTime();
 
-    function clearPlayers() {
+    function getDb() {
         var deferred = Q.defer();
-        Player.collection.remove(function (error, result) {
-            deferred.resolve();
+        MongoClient.connect('mongodb://127.0.0.1:27017/grepo_test', function (err, db) {
+            if (err) throw err;
+            deferred.resolve(db)
         });
         return deferred.promise;
     }
 
-    function persistPlayers() {
-        var counter = 0;
+    function clearPlayers(db) {
+        var deferred = Q.defer();
+        var collection = db.collection('players');
+        collection.drop(function (error, result) {
+            deferred.resolve(db);
+        });
+        return deferred.promise;
+    }
+
+    function finishUp(db) {
+        var end = new Date().getTime(),
+            time = (end - start) / 1000,
+            endMessage = 'Proccessed ' + total + ' players'
+        endMessage += '\nExecution time: ' + time + ' seconds'
+        endMessage += '\nCompleted'
+        console.log(endMessage);
+        db.close();
+    }
+
+    function persistPlayers(db) {
+        var collection = db.collection('players');
         var deferred = Q.defer();
         playerStream
             .each(function (player) {
-                counter++;
-                total++;
-                Player.create(player, function (err) {
+                collection.insert(player, function (err, docs) {
                     if (err) {
                         console.log(err);
                         throw 'boom';
                     }
-                    deferred.notify(player);
-                    counter--;
+                    total++;
+                    deferred.notify(docs);
                 });
             })
             .onComplete(function () {
                 _.defer(function () {
-                    deferred.resolve();
+                    deferred.resolve(db);
                 });
             });
         return deferred.promise;
     }
 
-    function finishUp() {
-        var end = new Date().getTime();
-        var time = (end - start) / 1000;
-        console.log('Proccessed ' + total + ' players');
-        console.log('Execution time: ' + time + ' seconds');
-        console.log('completed');
-        mongoose.connection.close();
-    }
-
-    clearPlayers()
+    getDb()
+        .then(clearPlayers)
         .then(persistPlayers)
         .then(finishUp, function () {}, function (progress) {
-            //console.log(progress);
+            console.log(progress);
         });
 }

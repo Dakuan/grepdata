@@ -1,0 +1,19 @@
+{
+  "name": "grepdata",
+  "version": "0.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "lazy.js": "~0.3.2",
+    "mongodb": "~1.3.23",
+    "q": "~1.0.0",
+    "request": "~2.33.0",
+    "underscore": "~1.5.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "BSD"
+}
