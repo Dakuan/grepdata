@@ -36,7 +36,6 @@ exports.persist = function (playerStream) {
                     upsert: true
                 }, function (err, docs) {
                     if (err) {
-                        console.log(err);
                         throw new Error(err)
                     }
                     total++;
@@ -65,7 +64,7 @@ exports.persist = function (playerStream) {
     .then(createIndex)
     .then(persistPlayers)
         .then(finishUp, function (err) {
-            console.log(err);
+            // console.log(err);
         }, function (progress) {
             // console.log(progress);
         });
