@@ -11,6 +11,7 @@ exports.players = function (world) {
         var end = new Date().getTime(),
             time = (end - start) / 1000;
         console.log('Processed: ' + total + ' players');
-        console.log('\nExecution time: ' + time + ' seconds');
+        console.log('Execution time: ' + time + ' seconds');
+        exit();
     });
 }
