@@ -65,6 +65,6 @@ exports.persist = function (playerStream) {
         .then(finishUp, function (err) {
             console.log(err);
         }, function (progress) {
-            console.log(progress);
+            // console.log(progress);
         });
 }
