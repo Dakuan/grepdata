@@ -4,6 +4,7 @@ var _ = require('underscore'),
 
 exports.persist = function (playerStream) {
     var total = 0,
+        count = 0,
         start = new Date().getTime();
 
     function getDb() {
@@ -30,6 +31,7 @@ exports.persist = function (playerStream) {
         var deferred = Q.defer();
         playerStream
             .each(function (player) {
+                count++;
                 collection.update({
                     playerId: player.playerId
                 }, player, {
@@ -38,14 +40,19 @@ exports.persist = function (playerStream) {
                     if (err) {
                         throw new Error(err)
                     }
+                    count--;
                     total++;
                     deferred.notify(player);
                 });
             })
             .onComplete(function () {
-                _.defer(function () {
-                    deferred.resolve(db);
-                });
+                var inter = setInterval(function () {
+                    if (count === 0) {
+                        deferred.resolve(db);
+                        clearInterval(inter);
+                    }
+                }, 20);
+
             });
         return deferred.promise;
     }
@@ -61,8 +68,8 @@ exports.persist = function (playerStream) {
     }
 
     getDb()
-    .then(createIndex)
-    .then(persistPlayers)
+        .then(createIndex)
+        .then(persistPlayers)
         .then(finishUp, function (err) {
             // console.log(err);
         }, function (progress) {
