@@ -5,5 +5,3 @@ exports.updatePlayers = function () {
         pruner(72);
     });
 }
-
-exports.updatePlayers()
