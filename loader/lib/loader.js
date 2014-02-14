@@ -3,7 +3,7 @@ var sourceData = require('./source-data'),
     parser = require('./player-parser'),
     _ = require('underscore'),
     fs = require('fs'),
-    Q = require('Q');
+    Q = require('q');
 
 exports.players = function (world) {
     var deferred = Q.defer();
