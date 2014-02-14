@@ -1,5 +1,5 @@
 var csv = require('csv'),
-    Q = require('Q'),
+    Q = require('q'),
     _ = require('underscore'),
     keys = ['playerId', 'name', 'allianceId', 'points', 'rank', 'towns'];
 
