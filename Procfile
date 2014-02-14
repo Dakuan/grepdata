@@ -1,2 +1,2 @@
 web: node api/app.js
-loader: node loader/tasks.js
+loader: node loader/schedule.js

@@ -1,16 +1,15 @@
-var sourceData = require('./source-data'),
+var sourceData = require('./utils/source-data'),
     Q = require('q'),
-    parser = require('./player-parser'),
-    mongo = require('./get-db');
+    parser = require('./players/player-parser'),
+    mongo = require('./utils/get-db');
 
-module.exports = function (world) {
+exports.players = function (world) {
+    var deferred = Q.defer();
     sourceData.players(world)
         .then(parser.parse)
         .then(getIdArray)
         .then(function (ids) {
-
-            console.log(ids.length)
-
+            console.log(ids);
             mongo.getDb().then(function (db) {
                 var collection = db.collection('players');
                 collection.find({
@@ -20,17 +19,20 @@ module.exports = function (world) {
                 }).toArray(function (err, docs) {
                     console.log("Returned " + docs.length + " documents");
                     db.close();
+                    deferred.resolve(world);
                 });
             });
         });
-}
+
+    return defer.promise;
+};
 
 function getIdArray(playerStream) {
     var deferred = Q.defer(),
         ids = [];
     playerStream.forEach(function (player) {
-            ids.push(player.playerId);
-        })
+        ids.push(player.playerId);
+    });
     deferred.resolve(ids);
     return deferred.promise;
 }

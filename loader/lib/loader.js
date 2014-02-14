@@ -1,11 +1,9 @@
-var sourceData = require('./source-data'),
-    persist = require('./player-persist'),
-    parser = require('./player-parser'),
-    _ = require('underscore'),
-    fs = require('fs'),
+var sourceData = require('./utils/source-data'),
+    persist = require('./players/player-persist'),
+    parser = require('./players/player-parser'),
     Q = require('q');
 
-exports.players = function (world) {
+function loadPlayers(world) {
     var deferred = Q.defer();
 
     function onComplete(total) {
@@ -13,7 +11,9 @@ exports.players = function (world) {
             time = (end - start) / 1000;
         console.log('Processed: ' + total + ' players');
         console.log('Execution time: ' + time + ' seconds');
-        deferred.resolve();
+
+        // promise the worldId to enable chaining
+        deferred.resolve(world);
     }
 
     var start = new Date().getTime();
@@ -24,4 +24,6 @@ exports.players = function (world) {
         .then(onComplete);
 
     return deferred.promise;
-};
+}
+
+exports.players = loadPlayers;
