@@ -1,26 +1,22 @@
-var Lazy = require('lazy.js'),
+var csv = require('csv'),
+    Q = require('Q'),
     _ = require('underscore'),
-    keys = ['playerId', 'name', 'allianceId', 'points', 'rank'];
+    keys = ['playerId', 'name', 'allianceId', 'points', 'rank', 'towns'];
 
-function split(line) {
-    return line.split(',');
-}
+exports.parse = function (file) {
+    var csv = require('csv');
+    var def = Q.defer();
+    csv()
+        .from(file)
+        .to.array(function (data, count) {
+            def.resolve(data);
+        })
+        .transform(function (row, index) {
+            return _(keys).reduce(function (memo, key, i) {
+                memo[key] = row[i];
+                return memo;
+            }, {});
+        });
 
-function lineLength(line) {
-    return line.length === 6
-}
-
-function toMap(line) {
-    return _(keys).reduce(function (memo, key, index) {
-        memo[key] = line[index];
-        return memo;
-    }, {});
-}
-
-exports.parse = function (fileStream) {
-    return Lazy(fileStream)
-        .lines()
-        .map(split)
-        .filter(lineLength)
-        .map(toMap);
+    return def.promise;
 }

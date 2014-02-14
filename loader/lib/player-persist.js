@@ -29,7 +29,7 @@ exports.persist = function (playerStream) {
         var collection = db.collection('players');
         var deferred = Q.defer();
         playerStream
-            .each(function (player) {
+            .forEach(function (player) {
                 count++;
                 collection.update({
                     playerId: player.playerId
@@ -42,16 +42,11 @@ exports.persist = function (playerStream) {
                     count--;
                     total++;
                     deferred.notify(player);
-                });
-            })
-            .onComplete(function () {
-                var inter = setInterval(function () {
                     if (count === 0) {
                         deferred.resolve(db);
-                        clearInterval(inter);
                     }
-                }, 20);
-            });
+                });
+            })
         return deferred.promise;
     }
 
@@ -61,7 +56,7 @@ exports.persist = function (playerStream) {
     }
     process.stdout.write('Processing players');
 
-    var dot = setInterval(function(){
+    var dot = setInterval(function () {
         process.stdout.write('.');
     }, 200);
     getDb()
