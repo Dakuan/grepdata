@@ -10,13 +10,12 @@ app.get('/players', function (req, res) {
                 var filtered = _(items).map(function (item) {
                     return _.omit(item, '_id');
                 });
-                // var filtered = _(items).map(_.omit, '_id');
-                // console.log(filtered);
                 res.send(filtered);
             });
         });
     });
 });
 
-app.listen(3001);
-console.log('Listening on port 3001');
+var port = Number(process.env.PORT || 5000);
+app.listen(port);
+console.log('Listening on port ' + port);
