@@ -1,5 +1,5 @@
-    var MongoClient = require('mongodb').MongoClient,
-        Q = require('q');
+var MongoClient = require('mongodb').MongoClient,
+    Q = require('q');
 
 exports.getDb = function () {
     var deferred = Q.defer(),

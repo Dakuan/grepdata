@@ -11,7 +11,8 @@
     "underscore": "~1.5.2",
     "cron": "~1.0.3",
     "tmp": "0.0.23",
-    "csv": "~0.3.7"
+    "csv": "~0.3.7",
+    "express": "~3.4.8"
   },
   "devDependencies": {},
   "scripts": {
