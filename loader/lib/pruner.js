@@ -10,19 +10,19 @@ exports.players = function (world) {
         .then(getIdArray)
         .then(function (ids) {
             mongo.getDb().then(function (db) {
-                var collection = db.collection('players');
-                collection.find({
-                    'playerId': {
-                        '$nin': ids
-                    }
-                }).toArray(function (err, docs) {
-                    console.log("Returned " + docs.length + " documents");
+                var collection = db.collection('players'),
+                    query = {
+                        'playerId': {
+                            '$nin': ids
+                        }
+                    };
+                collection.remove(query, function (err, removedDocs) {
+                    console.log("Pruned " + removedDocs + " players");
                     db.close();
                     deferred.resolve(world);
                 });
             });
         });
-
     return defer.promise;
 };
 
