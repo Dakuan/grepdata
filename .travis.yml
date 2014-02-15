@@ -1,7 +1,10 @@
 language: node_js
 node_js:
-   - "0.10"
+- '0.10'
 before_script:
-  - "travis_retry npm install -g gulp"
+- travis_retry npm install -g gulp
 script:
-  - "(cd loader/ && travis_retry gulp mocha)"
+- (cd loader/ && travis_retry gulp mocha)
+deploy:
+  api_key:
+    secure: EoczZoSzd5+s3rpmghQu4pD7ogJzvloy1VAThxI/tY9Xj28zKzFKn7nhuvyrNqY+4YGY525HulzpDdWEqL8hnbMhgdzqw3cXpbUkI9n7d96Nb9V8Hq3n0aQPTKVr6G3YWohxAL/teWgi6z8EJEQaUU53VlUnkBL2iHEw/S4H1M0=
