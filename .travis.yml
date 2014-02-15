@@ -6,5 +6,9 @@ before_script:
 script:
 - (cd loader/ && travis_retry gulp mocha)
 deploy:
+  strategy: git
+  provider: heroku
+  app:
+    master: grepdata
   api_key:
     secure: EoczZoSzd5+s3rpmghQu4pD7ogJzvloy1VAThxI/tY9Xj28zKzFKn7nhuvyrNqY+4YGY525HulzpDdWEqL8hnbMhgdzqw3cXpbUkI9n7d96Nb9V8Hq3n0aQPTKVr6G3YWohxAL/teWgi6z8EJEQaUU53VlUnkBL2iHEw/S4H1M0=
