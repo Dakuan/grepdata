@@ -9,7 +9,6 @@ exports.players = function (world) {
         .then(parser.parse)
         .then(getIdArray)
         .then(function (ids) {
-            console.log(ids);
             mongo.getDb().then(function (db) {
                 var collection = db.collection('players');
                 collection.find({

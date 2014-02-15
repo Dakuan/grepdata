@@ -2,14 +2,19 @@ var express = require('express'),
     _ = require('underscore'),
     app = express();
 
+function mapOmit(keysToOmit) {
+    return function (collection) {
+        return _(collection).map(function (item) {
+            return _.omit(item, keysToOmit);
+        });
+    }
+}
 
 app.get('/players', function (req, res) {
-    require('../loader/lib/get-db').getDb().then(function (db) {
+    require('../loader/lib/utils/get-db').getDb().then(function (db) {
         db.collection('players', function (err, collection) {
             collection.find().toArray(function (err, items) {
-                var filtered = _(items).map(function (item) {
-                    return _.omit(item, '_id');
-                });
+                var filtered = mapOmit(['_id'])(items)
                 res.send(filtered);
             });
         });
