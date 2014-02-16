@@ -2,27 +2,35 @@ var _ = require('underscore'),
     getDb = require('../utils/get-db').getDb,
     Q = require('q');
 
-exports.persist = function (playerStream) {
+function persister(indicies, collectionName, primaryKey, records) {
     var deferred = Q.defer(),
         total = 0,
         count = 0;
 
-    function createIndex(db) {
+    function createIndicies(db) {
+        function createIndex(index) {
+            var deferred = Q.defer();
+            db.ensureIndex(collectionName, index, function (err) {
+                deferred.resolve(db);
+            });
+            return deferred.promise;
+        }
         var deferred = Q.defer();
-        db.ensureIndex('players', "playerId", function (err) {
-            deferred.resolve(db);
-        });
+        Q.all(indicies.map(createIndex))
+            .then(function () {
+                deferred.resolve(db);
+            });
         return deferred.promise;
     }
 
-    function persistPlayers(db) {
-        var collection = db.collection('players');
+    function persist(db) {
+        var collection = db.collection(collectionName);
         var deferred = Q.defer();
-        playerStream.forEach(function (player) {
+        var query = {};
+        query[primaryKey] = primaryKey;
+        records.forEach(function (record) {
             count++;
-            collection.update({
-                playerId: player.playerId
-            }, player, {
+            collection.update(query, record, {
                 upsert: true
             }, function (err, docs) {
                 if (err) {
@@ -30,7 +38,7 @@ exports.persist = function (playerStream) {
                 }
                 count--;
                 total++;
-                deferred.notify(player);
+                deferred.notify(record);
                 if (count === 0) {
                     deferred.resolve(db);
                 }
@@ -44,15 +52,15 @@ exports.persist = function (playerStream) {
         return total;
     }
 
-    process.stdout.write('Processing players');
+    process.stdout.write('Processing ' + collectionName);
 
     var dot = setInterval(function () {
         process.stdout.write('.');
     }, 200);
-    
+
     getDb()
-        .then(createIndex)
-        .then(persistPlayers)
+        .then(createIndicies)
+        .then(persist)
         .then(finishUp, function (err) {
             console.log(err);
         }, function (progress) {})
@@ -62,4 +70,6 @@ exports.persist = function (playerStream) {
             deferred.resolve(total);
         });
     return deferred.promise;
-};
+}
+
+module.exports = persister;

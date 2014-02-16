@@ -1,5 +1,6 @@
-var loader = require('../loader').players,
-    pruner = require('../pruner').players;
+var Player = require('../models/player'),
+    loader = require('../loader')(Player),
+    pruner = require('../pruner')(Player);
 
 function updatePlayers(world) {
     loader(world).then(pruner);

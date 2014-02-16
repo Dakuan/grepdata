@@ -1,37 +1,35 @@
 var sourceData = require('./utils/source-data'),
     Q = require('q'),
-    parser = require('./players/player-parser'),
+    _ = require('underscore'),
     mongo = require('./utils/get-db');
 
-exports.players = function (world) {
-    var deferred = Q.defer();
-    sourceData.players(world)
-        .then(parser.parse)
-        .then(getIdArray)
-        .then(function (ids) {
-            mongo.getDb().then(function (db) {
-                var collection = db.collection('players'),
-                    query = {
-                        'playerId': {
-                            '$nin': ids
-                        }
+module.exports = function (resource) {
+
+    var collectionName = resource.prototype.collectionName(),
+        primaryKey = resource.prototype.primaryKey();
+
+    function pruner(world) {
+        var deferred = Q.defer();
+        sourceData[collectionName](world)
+            .then(resource.prototype.parse)
+            .then(function (records) {
+                return _(records).pluck(primaryKey);
+            })
+            .then(function (ids) {
+                mongo.getDb().then(function (db) {
+                    var collection = db.collection(collectionName),
+                        query = {};
+                    query[primaryKey] = {
+                        '$nin': ids
                     };
-                collection.remove(query, function (err, removedDocs) {
-                    console.log("Pruned " + removedDocs + " players");
-                    db.close();
-                    deferred.resolve(world);
+                    collection.remove(query, function (err, removedDocs) {
+                        console.log("Pruned " + removedDocs + " " + collectionName);
+                        db.close();
+                        deferred.resolve(world);
+                    });
                 });
             });
-        });
-    return defer.promise;
+        return defer.promise;
+    }
+    return pruner;
 };
-
-function getIdArray(playerStream) {
-    var deferred = Q.defer(),
-        ids = [];
-    playerStream.forEach(function (player) {
-        ids.push(player.playerId);
-    });
-    deferred.resolve(ids);
-    return deferred.promise;
-}

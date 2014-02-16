@@ -24,3 +24,7 @@ function getFile(world, file) {
 exports.players = function (world) {
     return getFile(world, 'players');
 };
+
+exports.towns = function (world) {
+    return getFile(world, 'towns');
+};
