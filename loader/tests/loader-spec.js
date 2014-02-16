@@ -8,7 +8,7 @@ var path = require('path'),
     expect = chai.expect;
 
 describe('loader', function () {
-    this.timeout(12000);
+    this.timeout(20000);
     describe('load players', function () {
         var fakefile;
         beforeEach(function (done) {
