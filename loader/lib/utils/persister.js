@@ -24,12 +24,12 @@ function persister(indicies, collectionName, primaryKey, records) {
     }
 
     function persist(db) {
-        var collection = db.collection(collectionName);
-        var deferred = Q.defer();
-        var query = {};
-        query[primaryKey] = primaryKey;
+        var collection = db.collection(collectionName),
+            deferred = Q.defer();
         records.forEach(function (record) {
             count++;
+            var query = {};
+            query[primaryKey] = record[primaryKey];
             collection.update(query, record, {
                 upsert: true
             }, function (err, docs) {

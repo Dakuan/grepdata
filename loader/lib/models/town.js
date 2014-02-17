@@ -30,6 +30,6 @@ Town.prototype.attributes = [{
 }];
 
 Town.prototype.indexes = ['townId', 'playerId'];
-_.bindAll(Town.prototype, 'parse', 'persist');
+_.bindAll(Town.prototype, 'parse', 'persist', 'primaryKey');
 
 module.exports = Town;
