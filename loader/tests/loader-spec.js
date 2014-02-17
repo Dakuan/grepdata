@@ -19,7 +19,7 @@ describe('loader', function () {
     after(function () {
         nock.restore();
     });
-    this.timeout(20000);
+    this.timeout(40000);
     describe('load players', function () {
         beforeEach(function (done) {
             mongo.getDb().then(function (db) {
