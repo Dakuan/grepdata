@@ -14,8 +14,8 @@ describe('SourceData', function () {
         });
         it('should return a stream', function (done) {
             SourceData.players(72).then(function (file) {
-                fakefile.done();
                 done();
+                fakefile.done();
             });
         })
     })
