@@ -28,3 +28,7 @@ exports.players = function (world) {
 exports.towns = function (world) {
     return getFile(world, 'towns');
 };
+
+exports.alliances = function (world) {
+    return getFile(world, 'alliances');
+};
