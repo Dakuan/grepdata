@@ -14,7 +14,7 @@ describe('loader', function () {
         fakefile = nock('http://en72.grepolis.com')
             .persist()
             .get('/data/players.txt.gz')
-            .replyWithFile(200, path.resolve(__dirname, './resources/players.txt.gz'));
+            .replyWithFile(200, path.resolve(__dirname, './resources/players_small.txt.gz'));
     });
     after(function () {
         nock.restore();
@@ -33,7 +33,7 @@ describe('loader', function () {
             subject(Player)(72).then(function () {
                 mongo.getDb().then(function (db) {
                     db.collection('players').count(function (err, count) {
-                        expect(count).to.eq(49596);
+                        expect(count).to.eq(39);
                         db.close();
                         done();
                     });
@@ -46,7 +46,7 @@ describe('loader', function () {
             .then(function () {
                 mongo.getDb().then(function (db) {
                     db.collection('players').count(function (err, count) {
-                        expect(count).to.eq(49596);
+                        expect(count).to.eq(39);
                         db.close();
                         done();
                     });
@@ -77,7 +77,7 @@ describe('loader', function () {
             subject(Town)(72).then(function () {
                 mongo.getDb().then(function (db) {
                     db.collection('towns').count(function (err, count) {
-                        expect(count).to.eq(37949);
+                        expect(count).to.eq(35);
                         db.close();
                         done();
                     });

@@ -10,10 +10,10 @@ describe('SourceData', function () {
         before(function () {
             fakefile = nock('http://en72.grepolis.com')
                 .get('/data/players.txt.gz')
-                .replyWithFile(200, path.resolve(__dirname, '../resources/players.txt.gz'));
+                .replyWithFile(200, path.resolve(__dirname, '../resources/players_small.txt.gz'));
         });
         it('should return a stream', function (done) {
-            SourceData.players(72).then(function (file) {
+            SourceData(72, 'players').then(function (file) {
                 done();
                 fakefile.done();
             });

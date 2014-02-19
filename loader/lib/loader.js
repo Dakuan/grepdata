@@ -20,7 +20,7 @@ module.exports = function (resource) {
             deferred.resolve(world);
         }
 
-        sourceData[file](world)
+        sourceData(world, file)
             .then(parser)
             .then(persister)
             .then(onComplete);

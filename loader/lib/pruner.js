@@ -10,7 +10,7 @@ module.exports = function (resource) {
 
     function pruner(world) {
         var deferred = Q.defer();
-        sourceData[collectionName](world)
+        sourceData(world, collectionName)
             .then(resource.prototype.parse)
             .then(function (records) {
                 return _(records).pluck(primaryKey);

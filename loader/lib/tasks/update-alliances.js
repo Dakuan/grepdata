@@ -8,4 +8,3 @@ function updateAlliances(world) {
 
 module.exports = updateAlliances;
 
-updateAlliances(72)
