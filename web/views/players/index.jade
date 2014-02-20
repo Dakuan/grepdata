@@ -1,0 +1,19 @@
+extends ../layouts/layout
+block head
+block content
+	div(class="page-header")
+		h1 Players
+	table(class="table table-condensed table-striped")
+		thead
+			tr
+				th name
+				th points
+				th cities
+				th alliance
+		tbody
+			each player in players
+				tr
+					td= player.name
+					td= player.points
+					td= player.towns
+					td= player.alliance ? player.alliance.name : ''

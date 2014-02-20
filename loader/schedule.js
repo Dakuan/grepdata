@@ -21,7 +21,3 @@ new cronJob('*/10 * * * *', function () {
 }, function () {
     exit();
 }, true, "Europe/London");
-
-
-
-
