@@ -3,6 +3,15 @@ block head
 block content
 	div(class="page-header")
 		h1 Players
+		ul(class="pagination")
+			li
+				a(href=pagination.first) &laquo;
+			li 
+				a(href=pagination.prev) previous
+			li
+				a(href=pagination.next) next
+			li
+				a(href=pagination.last) &raquo;
 	table(class="table table-condensed table-striped")
 		thead
 			tr

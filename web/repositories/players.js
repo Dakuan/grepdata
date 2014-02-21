@@ -7,7 +7,6 @@ function join(db, parents, opts) {
     var fKey = opts.fKey,
         collectionName = opts.collectionName,
         prop = opts.prop,
-        deferred = Q.defer(),
         modelsWithChild = _(parents).reject(function (p) {
             return p[fKey] === null;
         }),
@@ -16,7 +15,17 @@ function join(db, parents, opts) {
     query[fKey] = {
         $in: childIds
     };
-    db.collection(collectionName).find(query, function (err, collection) {
+
+    function getChildren() {
+        var deferred = Q.defer();
+        db.collection(collectionName).find(query, function (err, collection) {
+            deferred.resolve(collection);
+        });
+        return deferred.promise;
+    }
+
+    function joinChildren(collection) {
+        var deferred = Q.defer();
         collection.toArray(function (err, items) {
             var filtered = helpers.mapOmit(['_id'])(items);
             filtered.forEach(function (item) {
@@ -29,8 +38,10 @@ function join(db, parents, opts) {
             });
             deferred.resolve(helpers.mapOmit([fKey])(parents));
         });
-    });
-    return deferred.promise;
+        return deferred.promise;
+    }
+
+    return getChildren().then(joinChildren)
 }
 
 function getTotal(collection) {
@@ -42,22 +53,30 @@ function getTotal(collection) {
 }
 
 module.exports = {
+    getTotal: function () {
+        return mongo.getDb().then(function (db) {
+            var collection = db.collection('players');
+            var promise = getTotal(collection);
+            promise.done(function() {
+                db.close();
+            });
+            return promise;
+        });
+    },
+
     all: function (skip, limit) {
         var deferred = Q.defer();
         mongo.getDb().then(function (db) {
             var collection = db.collection('players');
-            getTotal(collection).then(function (count) {
-                collection.find().skip(skip).limit(limit).toArray(function (err, items) {
-                    console.log(count);
-                    console.log('total pages = ' + Math.ceil(count / limit));
-                    join(db, items, {
-                        fKey: 'allianceId',
-                        collectionName: 'alliances',
-                        prop: 'alliance'
-                    }).then(function (ps) {
-                        var filtered = helpers.mapOmit(['_id'])(ps);
-                        deferred.resolve(filtered);
-                    });
+            collection.find().skip(skip).limit(limit).toArray(function (err, items) {
+                join(db, items, {
+                    fKey: 'allianceId',
+                    collectionName: 'alliances',
+                    prop: 'alliance'
+                }).then(function (ps) {
+                    var filtered = helpers.mapOmit(['_id'])(ps);
+                    db.close();
+                    deferred.resolve(filtered);
                 });
             });
         });
