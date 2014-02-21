@@ -2,13 +2,13 @@ var repo = require('../repositories/players'),
     Q = require('q');
 
 function paginationViewModel(count, page, perPage) {
-    var next, prev = '';
+    var next, prev = '',
+        nextPage = page + 1;
     if (page > 1) {
         prev = '/players?page=' + (--page);
     }
     if (page < Math.ceil(count / perPage)) {
-        nextPage = page + 1;
-        nextPage++;
+
         next = '/players?page=' + nextPage;
     }
     return {
