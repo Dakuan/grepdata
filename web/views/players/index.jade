@@ -9,6 +9,9 @@ block content
       a(href=pagination.first) &laquo;
     li(class=pagination.prev ? '' : 'disabled') 
       a(href=pagination.prev) previous
+    each page in pagination.pages
+      li(class=pagination.page == page.number ? 'active' : '')  
+        a(href=page.url)= page.number
     li(class=pagination.next ? '' : 'disabled')
       a(href=pagination.next) next
     li(class=pagination.next ? '' : 'disabled')
