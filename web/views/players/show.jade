@@ -1,0 +1,20 @@
+extends ../layouts/layout
+block head
+block content
+	div(class="page-header")
+		h1= player.name
+
+	dl(class="dl-horizontal")
+		dt Points
+		dd= player.points
+		dt Rank
+		dd= player.rank
+		dt Towns
+		dd= player.towns
+	if player.alliance
+		h2 Alliance
+		dl(class="dl-horizontal")
+			dt Name
+			dd= player.alliance.name
+			dt Rank
+			dd= player.alliance.rank

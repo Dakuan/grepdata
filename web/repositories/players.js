@@ -44,42 +44,74 @@ function join(db, parents, opts) {
     return getChildren().then(joinChildren)
 }
 
-function getTotal(collection) {
+function getTotal(collectionName) {
+    return unitOfWork(function (deferred, db) {
+        var collection = db.collection(collectionName);
+        collection.count(function (err, count) {
+            deferred.resolve(count);
+        });
+    });
+}
+
+function unitOfWork(job) {
+    var deferred = Q.defer(),
+        promise = deferred.promise;
+    mongo.getDb().then(function (db) {
+        job(deferred, db);
+        promise.fin(function () {
+            db.close();
+        });
+    });
+    return promise;
+}
+
+
+function joinOne(db, player) {
     var deferred = Q.defer();
-    collection.count(function (err, count) {
-        deferred.resolve(count);
+    var allianceId = player.allianceId;
+    var collection = db.collection('alliances');
+    collection.findOne({
+        allianceId: allianceId
+    }, function (err, alliance) {
+        player.alliance = alliance;
+        delete player.allianceId;
+        deferred.resolve(player);
     });
     return deferred.promise;
 }
 
 module.exports = {
     getTotal: function () {
-        return mongo.getDb().then(function (db) {
+        return getTotal('players');
+    },
+
+    find: function (id) {
+        return unitOfWork(function (deferred, db) {
             var collection = db.collection('players');
-            var promise = getTotal(collection);
-            promise.done(function() {
-                db.close();
+            var query = {
+                playerId: parseInt(id)
+            };
+            collection.findOne(query, function (err, player) {
+                joinOne(db, player).then(function (player) {
+                    deferred.resolve(player);
+                });
             });
-            return promise;
         });
     },
 
-    all: function (skip, limit) {
-        var deferred = Q.defer();
-        mongo.getDb().then(function (db) {
+    all: function (skip, limit, query) {
+        return unitOfWork(function (deferred, db) {
             var collection = db.collection('players');
-            collection.find().skip(skip).limit(limit).toArray(function (err, items) {
+            collection.find(query).skip(skip).limit(limit).toArray(function (err, items) {
                 join(db, items, {
                     fKey: 'allianceId',
                     collectionName: 'alliances',
                     prop: 'alliance'
                 }).then(function (ps) {
                     var filtered = helpers.mapOmit(['_id'])(ps);
-                    db.close();
                     deferred.resolve(filtered);
                 });
             });
         });
-        return deferred.promise;
     }
 }

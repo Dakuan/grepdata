@@ -12,6 +12,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/players', playersController.all);
+app.get('/players/:id', playersController.show);
 
 var port = Number(process.env.PORT || 5000);
 app.listen(port);

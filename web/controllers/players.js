@@ -19,6 +19,14 @@ function paginationViewModel(count, page, perPage) {
     };
 }
 
+function paginationParams(req) {
+    var perPage = req.query.perPage || 50;
+    perPage = perPage * 1;
+    var page = req.query.page || 1;
+    page = page * 1;
+    var skip = (page * perPage) - perPage;
+    return {};
+}
 
 module.exports = {
     all: function (req, res) {
@@ -36,6 +44,14 @@ module.exports = {
             res.render('players/index', {
                 players: results[0],
                 pagination: paginationViewModel(results[1], page, perPage)
+            });
+        });
+    },
+
+    show: function (req, res) {    	
+        repo.find(req.params.id).then(function (player) {
+            res.render('players/show', {
+                player: player
             });
         });
     }
