@@ -5,13 +5,13 @@ block content
     h1 Players
 
   ul(class="pagination")
-    li
+    li(class=pagination.prev ? '' : 'disabled')
       a(href=pagination.first) &laquo;
-    li 
+    li(class=pagination.prev ? '' : 'disabled') 
       a(href=pagination.prev) previous
-    li
+    li(class=pagination.next ? '' : 'disabled')
       a(href=pagination.next) next
-    li
+    li(class=pagination.next ? '' : 'disabled')
       a(href=pagination.last) &raquo;
 
   table(class="table table-condensed table-striped")
