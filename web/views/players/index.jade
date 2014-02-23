@@ -22,6 +22,7 @@ block content
       tr
         th name
         th points
+        th rank
         th cities
         th alliance
     tbody
@@ -30,5 +31,6 @@ block content
           td
             a(href='players/' + player.playerId)= player.name
           td= player.points
+          td= player.rank
           td= player.towns
           td= player.alliance ? player.alliance.name : ''
