@@ -1,4 +1,4 @@
-require('newrelic');
+require('../newrelic');
 
 var express = require('express'),
     playersController = require('./controllers/players'),

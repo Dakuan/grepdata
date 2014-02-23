@@ -1,3 +1,4 @@
+require('../newrelic');
 var cronJob = require('cron').CronJob,
     time = require('time'),
     updatePlayers = require('./lib/tasks/update-players'),

@@ -65,7 +65,6 @@ function unitOfWork(job) {
     return promise;
 }
 
-
 function joinOne(db, player) {
     var deferred = Q.defer();
     var allianceId = player.allianceId;
@@ -99,10 +98,10 @@ module.exports = {
         });
     },
 
-    all: function (skip, limit, query) {
+    all: function (skip, limit, query, options) {
         return unitOfWork(function (deferred, db) {
             var collection = db.collection('players');
-            collection.find(query).skip(skip).limit(limit).toArray(function (err, items) {
+            collection.find(query, options).skip(skip).limit(limit).toArray(function (err, items) {
                 join(db, items, {
                     fKey: 'allianceId',
                     collectionName: 'alliances',

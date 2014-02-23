@@ -35,12 +35,12 @@ module.exports = {
         var page = req.query.page || 1;
         page = page * 1;
         var skip = (page * perPage) - perPage;
-
         Q.all([
-            repo.all(skip, perPage),
-            repo.getTotal()
+            repo.all(skip, perPage, {}, {
+                "sort": [['points', 'desc']]
+            }),
+            repo.getTotal();
         ]).then(function (results) {
-
             res.render('players/index', {
                 players: results[0],
                 pagination: paginationViewModel(results[1], page, perPage)
@@ -48,7 +48,7 @@ module.exports = {
         });
     },
 
-    show: function (req, res) {    	
+    show: function (req, res) {
         repo.find(req.params.id).then(function (player) {
             res.render('players/show', {
                 player: player
