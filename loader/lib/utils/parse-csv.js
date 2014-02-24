@@ -14,7 +14,7 @@ module.exports = function (keys) {
                 return _(keys).reduce(function (memo, key, i) {
                     var val;
                     if (row[i]) {
-                        val = (key.type === 'Int') ? parseInt(row[i]) : row[i].replace(/+/g, ' ');;
+                        val = (key.type === 'Int') ? parseInt(row[i]) : row[i].replace(/\+/g, ' ');;
                     }
                     memo[key.key] = val;
                     return memo;
