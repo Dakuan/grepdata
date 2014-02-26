@@ -112,5 +112,19 @@ module.exports = {
                 });
             });
         });
+    },
+
+    stats: function (id, options) {
+        return unitOfWork(function (deferred, db) {
+            var collection = db.collection('playerStats');
+            collection.find({
+                playerId: parseInt(id)
+            }, {}, options).toArray(function (err, stats) {
+                _.each(stats, function (stat) {
+                    stat['date'] = stat._id.getTimestamp().toJSON();
+                });
+                deferred.resolve(stats);
+            })
+        });
     }
 }

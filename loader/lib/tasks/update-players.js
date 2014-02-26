@@ -7,3 +7,5 @@ function updatePlayers(world) {
 }
 
 module.exports = updatePlayers;
+
+updatePlayers(72)

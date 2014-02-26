@@ -1,5 +1,8 @@
 extends ../layouts/layout
 block head
+	script(src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js")
+	script(src="/assets/chart.js")
+
 block content
 	div(class="page-header")
 		h1= player.name
@@ -11,6 +14,7 @@ block content
 		dd= player.rank
 		dt Towns
 		dd= player.towns
+
 	if player.alliance
 		h2 Alliance
 		dl(class="dl-horizontal")
@@ -18,3 +22,5 @@ block content
 			dd= player.alliance.name
 			dt Rank
 			dd= player.alliance.rank
+			
+	canvas(id="chart", width="400", height="400")

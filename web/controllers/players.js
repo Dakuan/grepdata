@@ -39,14 +39,6 @@ function paginationViewModel(count, page, perPage) {
     };
 }
 
-function paginationParams(req) {
-    var perPage = req.query.perPage || 50;
-    perPage = perPage * 1;
-    var page = parseInt(req.query.page) || 1;
-    var skip = (page * perPage) - perPage;
-    return {};
-}
-
 module.exports = {
     all: function (req, res) {
         var perPage = req.query.perPage || 50;
@@ -73,6 +65,14 @@ module.exports = {
             res.render('players/show', {
                 player: player
             });
+        });
+    },
+
+    stats: function (req, res) {
+        repo.stats(req.params.id, {
+            limit: 24
+        }).then(function (stats) {
+            res.json(stats);
         });
     }
 };
