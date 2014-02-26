@@ -15,10 +15,6 @@ $(function () {
                 pointColor: "rgba(220,220,220,1)",
                 pointStrokeColor: "#fff",
                 data: rPts
-            }, {
-            	pointColor: "rgba(0,0,0,0)",
-            	pointStrokeColor: "rgba(0,0,0)",
-            	data: [0]
             }]
         };
         new Chart(pointsCtx).Line(pointsData);        
@@ -30,8 +26,6 @@ $(function () {
                 pointColor: "rgba(151,187,205,1)",
                 pointStrokeColor: "#fff",
                 data: _(stats).pluck('rank')
-            }, {
-            	data: [0]
             }]
         };
         new Chart(rankCtx).Line(rankData);
