@@ -1,5 +1,5 @@
 var _ = require('underscore'),
-    mongo = require('../../loader/lib/utils/get-db'),
+    mongo = require('../../common/mongo'),
     helpers = require('../../common/underscore-helpers'),
     Q = require('q');
 
@@ -45,24 +45,12 @@ function join(db, parents, opts) {
 }
 
 function getTotal(collectionName) {
-    return unitOfWork(function (deferred, db) {
+    return mongo.unitOfWork(function (deferred, db) {
         var collection = db.collection(collectionName);
         collection.count(function (err, count) {
             deferred.resolve(count);
         });
     });
-}
-
-function unitOfWork(job) {
-    var deferred = Q.defer(),
-        promise = deferred.promise;
-    mongo.getDb().then(function (db) {
-        job(deferred, db);
-        promise.fin(function () {
-            db.close();
-        });
-    });
-    return promise;
 }
 
 function joinOne(db, player) {
@@ -85,7 +73,7 @@ module.exports = {
     },
 
     find: function (id) {
-        return unitOfWork(function (deferred, db) {
+        return mongo.unitOfWork(function (deferred, db) {
             var collection = db.collection('players');
             var query = {
                 playerId: parseInt(id)
@@ -99,7 +87,7 @@ module.exports = {
     },
 
     all: function (skip, limit, query, options) {
-        return unitOfWork(function (deferred, db) {
+        return mongo.unitOfWork(function (deferred, db) {
             var collection = db.collection('players');
             collection.find(query, options).skip(skip).limit(limit).toArray(function (err, items) {
                 join(db, items, {
@@ -115,7 +103,7 @@ module.exports = {
     },
 
     stats: function (id, options) {
-        return unitOfWork(function (deferred, db) {
+        return mongo.unitOfWork(function (deferred, db) {
             var collection = db.collection('playerStats');
             collection.find({
                 playerId: parseInt(id)

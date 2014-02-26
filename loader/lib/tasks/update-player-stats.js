@@ -1,4 +1,4 @@
-var mongo = require('../utils/get-db'),
+var mongo = require('../../../common/mongo'),
     _ = require('underscore'),
     Q = require('q')
     Player = require('../models/player');

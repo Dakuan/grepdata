@@ -1,5 +1,5 @@
 var _ = require('underscore'),
-    getDb = require('../utils/get-db').getDb,
+    mongo = require('../../../common/mongo'),
     Q = require('q');
 
 function persister(indicies, collectionName, primaryKey, records) {
@@ -58,7 +58,7 @@ function persister(indicies, collectionName, primaryKey, records) {
         process.stdout.write('.');
     }, 200);
 
-    getDb()
+    mongo.getDb()
         .then(createIndicies)
         .then(persist)
         .then(finishUp, function (err) {

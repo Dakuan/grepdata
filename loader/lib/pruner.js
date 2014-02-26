@@ -1,7 +1,7 @@
 var sourceData = require('./utils/source-data'),
     Q = require('q'),
     _ = require('underscore'),
-    mongo = require('./utils/get-db');
+    mongo = require('../../common/mongo');
 
 module.exports = function (resource) {
 

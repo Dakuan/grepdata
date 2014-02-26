@@ -4,7 +4,7 @@ var path = require('path'),
     Town = require('../lib/models/town'),
     chai = require('chai'),
     nock = require('nock'),
-    mongo = require('../lib/utils/get-db'),
+    mongo = require('../../common/mongo'),
     expect = chai.expect;
 
 describe('loader', function () {
