@@ -29,3 +29,5 @@ function updatePlayerStats(world) {
         });
     });
 }
+
+module.exports = updatePlayerStats;
