@@ -70,7 +70,7 @@ module.exports = {
 
     stats: function (req, res) {
         repo.stats(req.params.id, {
-            limit: 24
+            limit: 72
         }).then(function (stats) {
             res.json(stats);
         });
